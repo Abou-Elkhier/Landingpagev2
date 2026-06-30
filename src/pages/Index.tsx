@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { motion } from "framer-motion";
+import { useState, useEffect, useRef } from "react";
+import { motion, animate, useInView } from "framer-motion";
 import {
   Phone as PhoneIcon, Mail, MessageCircle, Download, Handshake, LogIn, Menu, X,
   ShieldCheck, Zap, Headphones, BadgeCheck, Sparkles,
@@ -8,14 +8,19 @@ import {
   ChevronDown, Facebook, Instagram, Linkedin, Youtube, Bell,
   Home as HomeIcon, ListOrdered, Plus, Store, Layers,
   TrendingUp, Users, Wallet, CheckCircle2, Clock, XCircle,
-  Send, ArrowLeft, Building2, Star,
+  Send, ArrowLeft, Building2, Star, Router,
 } from "lucide-react";
 import logo from "@/assets/logo.png";
 import merchant from "@/assets/merchant.png";
 import sim1 from "@/assets/sim1.png";
 import sim2 from "@/assets/sim2.png";
 import sim3 from "@/assets/sim3.png";
+import orangeLogo from "@/assets/orange.png";
+import inwiLogo from "@/assets/enwi.png";
+import marocTelecomLogo from "@/assets/maroc-telecom.png";
 import "./Index.css";
+import Contact from "@/components/Contact";
+import { TestimonialsCarousel } from "./TestimonialsCarousel";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 24 },
@@ -271,7 +276,7 @@ const Hero = () => (
               </div>
             </FloatCard>
 
-            <FloatCard className="absolute bottom-6 md:bottom-20 -left-2 md:left-auto md:-right-6 w-44 md:w-48 scale-90 md:scale-100 origin-bottom-left md:origin-center z-30 animate-float">
+            <FloatCard className="absolute bottom-6 md:bottom-20 left-0 md:left-auto md:-right-6 w-44 md:w-48 scale-90 md:scale-100 origin-bottom-left md:origin-center z-30 animate-float">
               <div className="flex items-center gap-3">
                 <div className="relative w-12 h-12">
                   <svg viewBox="0 0 36 36" className="w-12 h-12 -rotate-90">
@@ -316,11 +321,12 @@ const Hero = () => (
           </motion.span>
           <motion.h1
             initial="hidden" animate="show" variants={fadeUp} transition={{ duration: 0.7, delay: 0.1 }}
-            className="mt-5 text-4xl md:text-5xl lg:text-6xl font-extrabold leading-[1.15]"
+            className="mt-5 text-4xl md:text-5xl lg:text-6xl font-extrabold"
+            style={{ lineHeight: 1.2 }}
           >
-            <span className="text-gradient">SIM Services</span><br />
-            منصة الاتصالات<br />
-            الرقمية في المغرب
+            <span className="text-gradient">زد أرباح محلك</span><br />
+            وقدم جميع خدمات الاتصالات من مكان واحد.
+            <br />
           </motion.h1>
           <motion.p
             initial="hidden" animate="show" variants={fadeUp} transition={{ duration: 0.7, delay: 0.2 }}
@@ -332,8 +338,7 @@ const Hero = () => (
             initial="hidden" animate="show" variants={fadeUp} transition={{ duration: 0.7, delay: 0.3 }}
             className="mt-3 text-muted-foreground leading-relaxed"
           >
-            يساعد تطبيق SIM Services التجار والمهنيين على تنفيذ وإدارة خدمات الاتصالات، استقبال طلبات الزبائن، وتتبع حالتها عبر منصة واحدة موثوقة وسهلة الاستخدام.
-          </motion.p>
+            فورفيات إنوي وإتصالات وأورونج - تسجيل الأرقام –– إسترجاع الأرقام الضائعة PUK- طلب رمز – الألياف البصرية – تحويل من شركة إلى أخرى– إلغاء الإشتراكات-التعبئة السريعة-متجر بالجملة وأكثر.          </motion.p>
           <motion.div
             initial="hidden" animate="show" variants={fadeUp} transition={{ duration: 0.7, delay: 0.4 }}
             className="mt-7 flex flex-wrap gap-3 justify-start"
@@ -359,7 +364,7 @@ const Hero = () => (
         </div>
       </div>
     </div>
-  </section>
+  </section >
 );
 
 /* ---------------- Section heading ---------------- */
@@ -494,23 +499,23 @@ const About = () => (
       />
       <div className="grid md:grid-cols-3 gap-8 items-center">
         {[
-          { 
+          {
             // c: <OrdersPhone />, 
             c: <img src={sim1} alt="الطلبات" className="w-[230px] h-auto mx-auto object-contain drop-shadow-2xl" />,
-            t: "الطلبات", 
-            d: "اعرض جميع طلباتك بحالاتها." 
+            t: "الطلبات",
+            d: "اعرض جميع طلباتك بحالاتها."
           },
-          { 
+          {
             // c: <DetailsPhone />, 
             c: <img src={sim2} alt="تفاصيل الطلب" className="w-[230px] h-auto mx-auto object-contain drop-shadow-2xl" />,
-            t: "تفاصيل الطلب", 
-            d: "تتبع كل خطوة لحظة بلحظة." 
+            t: "تفاصيل الطلب",
+            d: "تتبع كل خطوة لحظة بلحظة."
           },
-          { 
+          {
             // c: <ReportsPhone />, 
             c: <img src={sim3} alt="التقارير" className="w-[230px] h-auto mx-auto object-contain drop-shadow-2xl" />,
-            t: "التقارير", 
-            d: "إحصائيات واضحة لأدائك." 
+            t: "التقارير",
+            d: "إحصائيات واضحة لأدائك."
           },
         ].map((s, i) => (
           <motion.div
@@ -534,17 +539,26 @@ const About = () => (
 
 
 /* ---------------- Services ---------------- */
+const TelecomLogos = () => (
+  <div className="flex items-center justify-center -space-x-5 space-x-reverse">
+    <img src={orangeLogo} alt="Orange" className="rounded-full border-2 border-white object-cover bg-white shadow-sm relative z-10" style={{ width: 50, height: 50 }} />
+    <img src={inwiLogo} alt="Inwi" className="rounded-full border-2 border-white object-cover bg-white shadow-sm relative z-20" style={{ width: 50, height: 50 }} />
+    <img src={marocTelecomLogo} alt="Maroc Telecom" className="rounded-full border-2 border-white object-cover bg-white shadow-sm relative z-30" style={{ width: 50, height: 50 }} />
+  </div>
+);
+
 const services = [
-  { Icon: Wifi, l: "باقات جميع الشبكات" },
-  { Icon: Smartphone, l: "تفعيل شرائح SIM" },
-  { Icon: BadgeCheck, l: "تسجيل الأرقام" },
+  { Icon: TelecomLogos, l: "فورفيات إنوي وإتصالات المغرب وأورنج" },
+  { Icon: Smartphone, l: "تنشيط بطاقات سيم الجديدة" },
+  { Icon: BadgeCheck, l: "تسجيل الأرقام (CONTRAT)" },
   { Icon: KeyRound, l: "استرجاع رمز PUK" },
-  { Icon: ArrowRightLeft, l: "نقل الأرقام بين الشركات" },
-  { Icon: Cable, l: "خدمات الألياف البصرية" },
+  { Icon: ArrowRightLeft, l: "تحويل الأرقام من شركة إلى أخرى." },
+  { Icon: Cable, l: "خدمات الألياف البصرية (FIBRE OPTIQUE)" },
   { Icon: Wifi, l: "خدمات ADSL" },
-  { Icon: CreditCard, l: "التعبئة" },
+  { Icon: CreditCard, l: "التعبئة السريعة" },
   { Icon: Rocket, l: "الطلبات السريعة" },
-  { Icon: ShoppingBag, l: "المتجر الإلكتروني" },
+  { Icon: ShoppingBag, l: "المتجر الإلكتروني بالجملة" },
+  { Icon: Router, l: "بيع أجهزة الإنترنت المنزلية المتنقلة (Routeurs / I-Dar / Dar Box)" },
   { Icon: Package, l: "خدمات أخرى" },
 ];
 
@@ -577,40 +591,49 @@ const Services = () => (
 
 /* ---------------- How it works ---------------- */
 const steps = [
-  { n: "1", t: "إدخال الطلب", d: "يقوم التاجر بإدخال معلومات الزبون ونوع الخدمة المطلوبة عبر التطبيق.", Icon: Plus },
-  { n: "2", t: "إرسال الطلب", d: "يتم إرسال الطلب تلقائيًا إلى منصة SIM Services لمراجعته ومعالجته.", Icon: Send },
-  { n: "3", t: "المعالجة", d: "تتم معالجة الطلب مع شركات الاتصالات والشركاء المعنيين دون الحاجة لتواصل مباشر مع الزبون النهائي.", Icon: RefreshCw },
-  { n: "4", t: "إشعار بالنتيجة", d: "يتوصل التاجر بإشعار فوري يوضح حالة الطلب: مقبول أو مرفوض مع سبب الرفض.", Icon: Bell },
+  { n: "1", t: "إدخال الطلب", d: "يقوم التاجر بإدخال معلومات الزبون ونوع الخدمة المطلوبة عبر التطبيق.", Icon: Plus, color: "from-blue-500 to-cyan-400", text: "text-blue-500", shadow: "shadow-blue-500/30" },
+  { n: "2", t: "إرسال الطلب", d: "يتم إرسال الطلب تلقائيًا إلى منصة SIM Services لمراجعته ومعالجته.", Icon: Send, color: "from-purple-500 to-pink-500", text: "text-purple-500", shadow: "shadow-purple-500/30" },
+  { n: "3", t: "المعالجة", d: "تتم معالجة الطلب مع شركات الاتصالات والشركاء المعنيين دون الحاجة لتواصل مباشر مع الزبون النهائي.", Icon: RefreshCw, color: "from-orange-500 to-yellow-400", text: "text-orange-500", shadow: "shadow-orange-500/30" },
+  { n: "4", t: "إشعار بالنتيجة", d: "يتوصل التاجر بإشعار فوري يوضح حالة الطلب: مقبول أو مرفوض مع سبب الرفض.", Icon: Bell, color: "from-emerald-500 to-teal-400", text: "text-emerald-500", shadow: "shadow-emerald-500/30" },
 ];
 
 const HowItWorks = () => (
-  <section id="how" className="py-20">
-    <div className="container mx-auto px-4">
+  <section id="how" className="py-20 relative overflow-hidden bg-slate-50/40">
+    <div className="container mx-auto px-4 relative z-10">
       <SectionHead
         kicker={<><Sparkles size={14} /> آلية العمل</>}
         title="كيف يعمل التطبيق؟"
         desc="أربع خطوات بسيطة من إدخال الطلب حتى استلام النتيجة."
       />
-      <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 relative">
+      <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 relative mt-10">
         {steps.map((s, i) => (
           <motion.div
             key={i}
             initial="hidden" whileInView="show" viewport={{ once: true, margin: "-60px" }}
             variants={fadeUp} transition={{ duration: 0.5, delay: i * 0.1 }}
-            className="relative"
+            className="relative group"
           >
-            <div className="glass-card p-6 h-full text-center hover:-translate-y-1 transition-all duration-300">
-              <div className="mx-auto w-16 h-16 rounded-2xl bg-gradient-brand text-white flex items-center justify-center shadow-card mb-4">
-                <s.Icon size={26} />
+            <div className="glass-card p-6 md:p-8 h-full text-center hover:-translate-y-2 transition-all duration-300 relative overflow-hidden bg-white/80 border border-white">
+              {/* Top border color hint */}
+              <div className={`absolute top-0 right-0 w-full h-1.5 bg-gradient-to-l ${s.color}`}></div>
+
+              <div className={`mx-auto w-20 h-20 rounded-[24px] bg-gradient-to-br ${s.color} text-white flex items-center justify-center shadow-lg ${s.shadow} mb-6 relative z-10 group-hover:scale-110 transition-transform duration-300 group-hover:rotate-3`}>
+                <s.Icon size={32} />
               </div>
-              <div className="text-5xl font-display font-black text-gradient leading-none mb-2">{s.n}</div>
-              <div className="font-extrabold text-lg mb-2">{s.t}</div>
-              <div className="text-sm text-muted-foreground leading-relaxed">{s.d}</div>
+
+              <div className={`text-7xl font-display font-black absolute -bottom-4 -left-4 leading-none opacity-[0.03] pointer-events-none group-hover:scale-110 transition-transform duration-500`}>
+                {s.n}
+              </div>
+
+              <h3 className={`font-extrabold text-xl mb-3 ${s.text}`}>{s.t}</h3>
+              <p className="text-sm text-muted-foreground leading-relaxed">{s.d}</p>
             </div>
+
+            {/* The Arrow */}
             {i < 3 && (
-              <div className="hidden lg:flex absolute top-1/2 -translate-y-1/2 -left-3 z-10">
-                <div className="w-8 h-8 rounded-full bg-white shadow-card flex items-center justify-center">
-                  <ArrowLeft size={14} className="text-brand-magenta" />
+              <div className="hidden lg:flex absolute top-1/2 -translate-y-1/2 -left-6 z-20">
+                <div className={`w-12 h-12 rounded-full bg-white shadow-card flex items-center justify-center text-slate-300 border border-slate-100 group-hover:text-brand-magenta group-hover:scale-110 transition-all duration-300`}>
+                  <ArrowLeft size={24} strokeWidth={2.5} />
                 </div>
               </div>
             )}
@@ -665,15 +688,15 @@ const Partners = () => (
               كن شريكًا مع <span className="block">SIM Services</span>
             </h2>
             <p className="mt-4 text-white/90 leading-relaxed">
-              طوّر نشاطك التجاري واستقبل طلبات الزبائن مباشرة عبر التطبيق مع أدوات تساعدك على المتابعة والنمو.
-            </p>
+              ابدأ خلال أقل من دقيقة وطوّر نشاطك التجاري واستقبل طلبات الزبائن مباشرة عبر التطبيق مع أدوات تساعدك على المتابعة والنمو.            </p>
             <div className="mt-6 grid grid-cols-2 sm:grid-cols-3 gap-3">
               {[
-                { Icon: Package, l: "طلبات جاهزة" },
+                { Icon: Package, l: "متابعة الطلبات" },
                 { Icon: Users, l: "زبائن جدد" },
                 { Icon: Layers, l: "لوحة إدارة الطلبات" },
                 { Icon: Wallet, l: "عمولات مجزية" },
                 { Icon: TrendingUp, l: "نمو النشاط" },
+                { Icon: MoreHorizontal, l: "خدمات أكثر" },
               ].map((b, i) => (
                 <div key={i} className="rounded-2xl bg-white/15 backdrop-blur border border-white/25 p-3 flex items-center gap-2">
                   <b.Icon size={18} />
@@ -701,11 +724,15 @@ const Partners = () => (
 
 /* ---------------- Trust ---------------- */
 const trust = [
-  { Icon: Building2, t: "بدعم من Daoudi Groupe Technologies", d: "خبرة تقنية موثوقة تدعم نجاحك.", featured: true },
+  { Icon: Wallet, t: "عمولات مجزية", d: "حقق أرباحا إضافية من كل خدمة تقدمها لزبنائك.", featured: true },
   { Icon: ShieldCheck, t: "منصة آمنة", d: "حماية متقدمة لبياناتك ومعاملاتك." },
   { Icon: Zap, t: "معالجة سريعة", d: "تقنية متطورة لضمان سرعة تنفيذ الطلبات." },
   { Icon: Headphones, t: "دعم العملاء", d: "فريق دعم متاح لمساعدتك في كل الأوقات." },
   { Icon: BadgeCheck, t: "خدمات موثوقة", d: "شركاء معتمدون لضمان أفضل جودة للخدمة." },
+  { Icon: Smartphone, t: "تطبيق هاتفي سهل", d: "كل هاد الخدمات فقط من هاتفك وبدون تعقيدات" },
+  { Icon: Users, t: "أكثر من +500 تاجر يثق بنا", d: "انضم إلى شبكة متنامية من التجار والمهنيين الذين يعتمدون على SIM Services يوميًا." },
+  { Icon: Wifi, t: "جميع الشبكات", d: "Orange – inwi – Maroc Telecom من تطبيق واحد" },
+  { Icon: Clock, t: "خبرة", d: "اكثر من سنة خبرة" },
 ];
 
 const Trust = () => (
@@ -732,12 +759,186 @@ const Trust = () => (
           </motion.div>
         ))}
       </div>
+      <div className="mt-12 text-center relative z-10">
+        <BrandBtn href="#download" className="px-8 py-4 text-lg">
+          ابدأ العمل من هاتفك فقط <ArrowLeft size={20} />
+        </BrandBtn>
+      </div>
+    </div>
+  </section>
+);
+
+/* ---------------- Testimonials ---------------- */
+const testimonials = [
+  {
+    name: "أحمد المودن",
+    role: "صاحب نقطة بيع",
+    text: "تطبيق رائع جداً، سهل علي الكثير من الجهد والوقت في تلبية طلبات الزبائن. العمولات ممتازة والدعم الفني دائماً متواجد للمساعدة.",
+    rating: 5,
+    avatar: "أ"
+  },
+  {
+    name: "يوسف الناصري",
+    role: "تاجر تقسيط",
+    text: "منذ بدأت استخدام SIM Services وزادت أرباحي بشكل ملحوظ. واجهة التطبيق بسيطة وسريعة جداً في معالجة الطلبات بدون أي تعقيدات.",
+    rating: 5,
+    avatar: "ي"
+  },
+  {
+    name: "كريم السعدي",
+    role: "موزع خدمات",
+    text: "أفضل منصة تعاملت معها! شفافية تامة في تتبع العمولات وتنوع كبير في الخدمات من التعبئة إلى الألياف البصرية كلها في تطبيق واحد.",
+    rating: 5,
+    avatar: "ك"
+  }
+];
+
+const Testimonials = () => (
+  <section className="py-20 bg-gradient-brand-soft/20 relative overflow-hidden" dir="rtl">
+    <div className="absolute top-0 right-0 w-96 h-96 bg-brand-orange/5 rounded-full blur-3xl -z-10" />
+    <div className="absolute bottom-0 left-0 w-96 h-96 bg-brand-magenta/5 rounded-full blur-3xl -z-10" />
+
+    <div className="container mx-auto px-4">
+      <SectionHead
+        kicker={<><MessageCircle size={14} /> آراء التجار</>}
+        title="ماذا يقول شركاؤنا؟"
+        desc="تجار ومهنيون يعتمدون على SIM Services لتطوير أعمالهم وزيادة أرباحهم."
+      />
+
+      <div className="grid md:grid-cols-3 gap-6 lg:gap-8 mt-12 relative z-10">
+        {testimonials.map((t, i) => (
+          <motion.div
+            key={i}
+            initial="hidden" whileInView="show" viewport={{ once: true, margin: "-50px" }}
+            variants={fadeUp} transition={{ duration: 0.5, delay: i * 0.15 }}
+            className="glass-card bg-white/60 p-8 relative group hover:-translate-y-2 transition-all duration-300 flex flex-col"
+          >
+            {/* Quote Icon */}
+            <div className="absolute top-6 left-6 opacity-[0.04] text-brand-magenta group-hover:scale-110 transition-transform duration-500">
+              <svg width="60" height="60" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
+              </svg>
+            </div>
+
+            <div className="flex gap-1 mb-6 relative z-10">
+              {[...Array(t.rating)].map((_, idx) => (
+                <Star key={idx} size={18} className="text-yellow-400 fill-yellow-400" />
+              ))}
+            </div>
+
+            <p className="text-foreground/80 leading-relaxed font-medium mb-8 text-base md:text-lg relative z-10">"{t.text}"</p>
+
+            <div className="flex items-center gap-4 mt-auto relative z-10">
+              <div className="w-12 h-12 rounded-full bg-gradient-brand text-white flex items-center justify-center font-bold text-xl shadow-soft">
+                {t.avatar}
+              </div>
+              <div>
+                <h4 className="font-extrabold text-foreground">{t.name}</h4>
+                <div className="text-sm text-brand-magenta font-bold">{t.role}</div>
+              </div>
+            </div>
+          </motion.div>
+        ))}
+      </div>
+    </div>
+  </section>
+);
+
+/* ---------------- Advanced Testimonials (Creative Bento Grid) ---------------- */
+const bentoTestimonials = [
+  {
+    name: "أحمد المودن",
+    role: "صاحب نقطة بيع",
+    text: "تطبيق رائع جداً، سهل علي الكثير من الجهد والوقت في تلبية طلبات الزبائن. العمولات ممتازة والدعم الفني دائماً متواجد للمساعدة في أي وقت وباحترافية عالية.",
+    rating: 5,
+    avatar: "أ",
+    featured: true,
+    color: "bg-gradient-brand text-white shadow-glow border-none"
+  },
+  {
+    name: "يوسف الناصري",
+    role: "تاجر تقسيط",
+    text: "منذ بدأت استخدام التطبيق وزادت أرباحي بشكل ملحوظ.",
+    rating: 5,
+    avatar: "ي",
+    featured: false,
+    color: "bg-white/70 backdrop-blur"
+  },
+  {
+    name: "سناء العلمي",
+    role: "وكالة اتصالات",
+    text: "واجهة بسيطة وسريعة جداً في معالجة الطلبات بدون تعقيدات.",
+    rating: 5,
+    avatar: "س",
+    featured: false,
+    color: "bg-white/70 backdrop-blur"
+  },
+  {
+    name: "كريم السعدي",
+    role: "موزع خدمات",
+    text: "أفضل منصة تعاملت معها! شفافية تامة في تتبع العمولات وتنوع كبير في الخدمات من التعبئة إلى الألياف البصرية كلها في مكان واحد.",
+    rating: 5,
+    avatar: "ك",
+    featured: true,
+    color: "bg-gradient-brand-soft border border-brand-pink/30 text-foreground"
+  }
+];
+
+const AdvancedTestimonials = () => (
+  <section className="py-24 relative overflow-hidden bg-slate-50/30" dir="rtl">
+    <div className="absolute top-0 right-1/4 w-[500px] h-[500px] bg-brand-orange/10 rounded-full blur-[100px] -z-10 animate-float-slow" />
+    <div className="absolute bottom-0 left-1/4 w-[600px] h-[600px] bg-brand-magenta/10 rounded-full blur-[100px] -z-10 animate-float" />
+
+    <div className="container mx-auto px-4">
+      <SectionHead
+        kicker={<><MessageCircle size={14} /> آراء الشركاء</>}
+        title="ثقة تُبنى بالنتائج"
+        desc="تجار ومهنيون اختاروا التطبيق لتطوير أعمالهم وزيادة أرباحهم، استمع لتجاربهم."
+      />
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-5 lg:gap-6 mt-16 max-w-6xl mx-auto">
+        {bentoTestimonials.map((t, i) => (
+          <motion.div
+            key={i}
+            initial="hidden" whileInView="show" viewport={{ once: true, margin: "-50px" }}
+            variants={fadeUp} transition={{ duration: 0.6, delay: i * 0.1 }}
+            className={`glass-card p-8 md:p-10 relative overflow-hidden group hover:-translate-y-2 transition-all duration-500 flex flex-col ${t.featured ? 'md:col-span-2' : 'md:col-span-1'} ${t.color}`}
+          >
+            <div className={`absolute -top-6 -left-6 opacity-[0.03] group-hover:scale-110 group-hover:rotate-12 transition-transform duration-700 ${t.featured && t.color.includes('text-white') ? 'text-white' : 'text-brand-magenta'}`}>
+              <svg width="180" height="180" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
+              </svg>
+            </div>
+
+            <div className="flex gap-1.5 mb-6 relative z-10">
+              {[...Array(t.rating)].map((_, idx) => (
+                <Star key={idx} size={t.featured ? 22 : 18} className="text-yellow-400 fill-yellow-400 drop-shadow-sm" />
+              ))}
+            </div>
+
+            <p className={`relative z-10 font-bold leading-relaxed mb-10 ${t.featured ? 'text-2xl md:text-3xl lg:leading-[1.5]' : 'text-lg'} ${t.color.includes('text-white') ? 'text-white/95' : 'text-foreground/80'}`}>
+              "{t.text}"
+            </p>
+
+            <div className="flex items-center gap-4 mt-auto relative z-10">
+              <div className={`w-14 h-14 rounded-full flex items-center justify-center font-black text-2xl shadow-inner border-2 ${t.color.includes('text-white') ? 'bg-white text-brand-magenta border-white/20' : 'bg-gradient-brand text-white border-transparent'}`}>
+                {t.avatar}
+              </div>
+              <div>
+                <h4 className={`font-extrabold text-lg ${t.color.includes('text-white') ? 'text-white' : 'text-foreground'}`}>{t.name}</h4>
+                <div className={`text-sm font-bold mt-1 ${t.color.includes('text-white') ? 'text-white/70' : 'text-brand-magenta'}`}>{t.role}</div>
+              </div>
+            </div>
+          </motion.div>
+        ))}
+      </div>
     </div>
   </section>
 );
 
 /* ---------------- FAQ ---------------- */
 const faqs = [
+  { q: "هل التسجيل مجاني؟", a: "نعم التسجيل فابور وفي البلاصة وبدون تعقيدات" },
   { q: "ما هي الخدمات التي يقدمها التطبيق؟", a: "يقدم التطبيق مجموعة كاملة من خدمات الاتصالات تشمل تفعيل شرائح SIM، تسجيل الأرقام، استرجاع رمز PUK، نقل الأرقام، خدمات الألياف البصرية وADSL، التعبئة، والمتجر الإلكتروني." },
   { q: "من يمكنه استخدام SIM Services؟", a: "التطبيق موجّه أساسًا للتجار والمهنيين الذين يقدمون خدمات الاتصالات لزبائنهم، مع توفر لوحة مخصصة للشركاء." },
   { q: "كيف يتم تتبع حالة الطلب؟", a: "يمكنك متابعة الطلب لحظة بلحظة عبر صفحة التفاصيل، وستصلك إشعارات فورية عند كل تغيير في الحالة." },
@@ -785,20 +986,20 @@ const FAQ = () => {
 const Contact = () => (
   <section id="contact" className="py-20 relative">
     <div className="absolute inset-0 bg-gradient-brand-soft/30 -z-10" />
-    
+
     <div className="container mx-auto px-4">
       <SectionHead
         kicker={<><MessageCircle size={14} /> تواصل</>}
         title="تواصل معنا"
         desc="نحن هنا للإجابة على أسئلتك. اختر الطريقة الأنسب لك للحصول على دعم فوري."
       />
-      
+
       <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto mt-10">
         {[
           { Icon: Mail, t: "البريد الإلكتروني", v: "contact@simservices.ma", href: "mailto:contact@simservices.ma", color: "text-brand-magenta" },
           { Icon: PhoneIcon, t: "رقم الهاتف", v: "+212 700 123 456", href: "tel:+212700123456", color: "text-brand-orange" },
         ].map((c, i) => (
-          <motion.a 
+          <motion.a
             key={i} href={c.href}
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -816,7 +1017,7 @@ const Contact = () => (
           </motion.a>
         ))}
 
-        <motion.a 
+        <motion.a
           href="https://wa.me/212700123456" target="_blank" rel="noreferrer"
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -906,7 +1107,14 @@ const Footer = () => (
         </div>
 
         <div className="relative mt-12 pt-6 border-t border-white/20 text-center text-sm opacity-90">
-          © SIM Services – Daoudi Groupe Technologies
+          <div className="mb-2">© {new Date().getFullYear()} SIM Services – Daoudi Groupe Technologies</div>
+          <div className="flex flex-wrap justify-center gap-4 text-xs opacity-75 font-mono" dir="ltr">
+            <span>ICE: 02552225555425121545</span>
+            <span>|</span>
+            <span>IF: 12544</span>
+            <span>|</span>
+            <span>RC: 21215</span>
+          </div>
         </div>
       </div>
     </div>
@@ -1232,7 +1440,7 @@ const AdvancedPartners = () => {
           <div className="adv-partner-grid">
             <div className="adv-content-side">
               <h2 id="partner-title">كن شريكًا مع SIM Services</h2>
-              <p>طوّر نشاطك التجاري، احصل على طلبات جديدة، وتابع أعمالك بسهولة عبر لوحة تحكم احترافية.</p>
+              <p>   ابدأ خلال أقل من دقيقة وطوّر نشاطك التجاري واستقبل طلبات الزبائن مباشرة عبر التطبيق مع أدوات تساعدك على المتابعة والنمو.</p>
 
               <div className="adv-benefits" aria-label="مزايا الشراكة">
                 <div className="adv-benefit">
@@ -1316,7 +1524,7 @@ const AdvancedPartners2 = () => {
           <div className="adv-partner-grid">
             <div className="adv-content-side">
               <h2 id="partner-title-2">كن شريكًا مع SIM Services</h2>
-              <p>طوّر نشاطك التجاري، احصل على طلبات جديدة، وتابع أعمالك بسهولة عبر لوحة تحكم احترافية.</p>
+              <p>ابدأ خلال أقل من دقيقة وطوّر نشاطك التجاري واستقبل طلبات الزبائن مباشرة عبر التطبيق مع أدوات تساعدك على المتابعة والنمو.</p>
 
               <div className="adv-benefits" aria-label="مزايا الشراكة">
                 <div className="adv-benefit">
@@ -1505,15 +1713,16 @@ const AdvancedPartners3 = () => {
                 <Handshake size={14} /> برنامج الشركاء
               </motion.span>
               <motion.h2 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.3 }} id="partner-title-3">كن شريكًا مع SIM Services</motion.h2>
-              <motion.p initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.4 }}>طوّر نشاطك التجاري، احصل على طلبات جديدة، وتابع أعمالك بسهولة عبر لوحة تحكم احترافية.</motion.p>
+              <motion.p initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.4 }}>ابدأ خلال أقل من دقيقة وطوّر نشاطك التجاري واستقبل طلبات الزبائن مباشرة عبر التطبيق مع أدوات تساعدك على المتابعة والنمو.</motion.p>
 
               <div className="mt-6 grid grid-cols-2 sm:grid-cols-3 gap-3">
                 {[
-                  { Icon: Package, l: "طلبات جاهزة" },
+                  { Icon: Package, l: "متابعة الطلبات" },
                   { Icon: Users, l: "زبائن جدد" },
                   { Icon: Layers, l: "لوحة إدارة الطلبات" },
                   { Icon: Wallet, l: "عمولات مجزية" },
                   { Icon: TrendingUp, l: "نمو النشاط" },
+                  { Icon: MoreHorizontal, l: "خدمات أكثر" },
                 ].map((b, i) => (
                   <motion.div initial={{ opacity: 0, scale: 0.8 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ delay: 0.5 + (i * 0.1) }} key={i} className="rounded-2xl bg-white/15 backdrop-blur border border-white/25 p-3 flex items-center gap-2 text-white">
                     <b.Icon size={18} />
@@ -1569,6 +1778,95 @@ const AdvancedPartners3 = () => {
   );
 };
 
+/* ---------------- Animated Counter ---------------- */
+const AnimatedCounter = ({ from = 0, to, duration = 2 }: { from?: number, to: number, duration?: number }) => {
+  const nodeRef = useRef<HTMLSpanElement>(null);
+  const inView = useInView(nodeRef, { once: true, margin: "-50px" });
+
+  useEffect(() => {
+    const node = nodeRef.current;
+    if (node && inView) {
+      const controls = animate(from, to, {
+        duration,
+        ease: "easeOut",
+        onUpdate(value) {
+          node.textContent = Math.round(value).toString();
+        }
+      });
+      return () => controls.stop();
+    }
+  }, [from, to, duration, inView]);
+
+  return <span ref={nodeRef}>{from}</span>;
+};
+
+/* ---------------- Counters Section ---------------- */
+const CountersSection = () => {
+  const stats = [
+    { label: "تاجر نشط", value: 500, prefix: "+", icon: Users, color: "text-brand-orange", bg: "bg-brand-orange/10" },
+    { label: "طلب مكتمل", value: 5000, prefix: "+", icon: ShoppingBag, color: "text-brand-magenta", bg: "bg-brand-magenta/10" },
+    { label: "نسبة النجاح", value: 92, prefix: "", suffix: "%", icon: CheckCircle2, color: "text-success", bg: "bg-success/10" },
+    { label: "دعم متواصل", value: 24, prefix: "", suffix: "/7", icon: Headphones, color: "text-blue-500", bg: "bg-blue-500/10" }
+  ];
+
+  return (
+    <section className="py-12 relative z-10 my-8" dir="rtl">
+      <div className="container mx-auto px-4">
+        <div className="glass-card p-8 md:p-10 rounded-[32px] md:rounded-[40px] shadow-glow border border-white/40 bg-white/60 backdrop-blur-xl">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-10 md:gap-12 divide-x divide-x-reverse divide-border/50">
+            {stats.map((s, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: i * 0.1 }}
+                className="flex flex-col items-center justify-center text-center px-2"
+              >
+                <div className={`w-16 h-16 md:w-20 md:h-20 rounded-3xl flex items-center justify-center mb-5 md:mb-6 ${s.bg} ${s.color} shadow-soft`}>
+                  <s.icon size={32} className="md:w-10 md:h-10" />
+                </div>
+                <div className="flex items-baseline gap-1 mb-2" dir="ltr">
+                  <span className="text-4xl md:text-5xl font-extrabold text-foreground tracking-tight drop-shadow-sm">
+                    {s.prefix}<AnimatedCounter to={s.value} />
+                  </span>
+                  {s.suffix && <span className="text-2xl md:text-3xl font-extrabold text-muted-foreground">{s.suffix}</span>}
+                </div>
+                <div className="text-base md:text-lg font-bold text-muted-foreground">{s.label}</div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+/* ---------------- Floating WhatsApp ---------------- */
+const FloatingWhatsApp = () => (
+  <a
+    href="https://wa.me/212600000000"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="fixed bottom-6 right-6 z-50 flex items-center justify-center hover:scale-110 transition-transform duration-300 drop-shadow-2xl hover:-translate-y-1"
+    aria-label="تواصل معنا عبر واتساب"
+  >
+    <svg style={{ pointerEvents: "none", display: "block", height: "60px", width: "60px" }} width="60px" height="60px" viewBox="0 0 1024 1024">
+      <defs>
+        <path id="htwasqicona-chat" d="M1023.941 765.153c0 5.606-.171 17.766-.508 27.159-.824 22.982-2.646 52.639-5.401 66.151-4.141 20.306-10.392 39.472-18.542 55.425-9.643 18.871-21.943 35.775-36.559 50.364-14.584 14.56-31.472 26.812-50.315 36.416-16.036 8.172-35.322 14.426-55.744 18.549-13.378 2.701-42.812 4.488-65.648 5.3-9.402.336-21.564.505-27.15.505l-504.226-.081c-5.607 0-17.765-.172-27.158-.509-22.983-.824-52.639-2.646-66.152-5.4-20.306-4.142-39.473-10.392-55.425-18.542-18.872-9.644-35.775-21.944-50.364-36.56-14.56-14.584-26.812-31.471-36.415-50.314-8.174-16.037-14.428-35.323-18.551-55.744-2.7-13.378-4.487-42.812-5.3-65.649-.334-9.401-.503-21.563-.503-27.148l.08-504.228c0-5.607.171-17.766.508-27.159.825-22.983 2.646-52.639 5.401-66.151 4.141-20.306 10.391-39.473 18.542-55.426C34.154 93.24 46.455 76.336 61.07 61.747c14.584-14.559 31.472-26.812 50.315-36.416 16.037-8.172 35.324-14.426 55.745-18.549 13.377-2.701 42.812-4.488 65.648-5.3 9.402-.335 21.565-.504 27.149-.504l504.227.081c5.608 0 17.766.171 27.159.508 22.983.825 52.638 2.646 66.152 5.401 20.305 4.141 39.472 10.391 55.425 18.542 18.871 9.643 35.774 21.944 50.363 36.559 14.559 14.584 26.812 31.471 36.415 50.315 8.174 16.037 14.428 35.323 18.551 55.744 2.7 13.378 4.486 42.812 5.3 65.649.335 9.402.504 21.564.504 27.15l-.082 504.226z"></path>
+      </defs>
+      <linearGradient id="htwasqiconb-chat" gradientUnits="userSpaceOnUse" x1="512.001" y1=".978" x2="512.001" y2="1025.023">
+        <stop offset="0" stopColor="#61fd7d"></stop>
+        <stop offset="1" stopColor="#2bb826"></stop>
+      </linearGradient>
+      <use href="#htwasqicona-chat" overflow="visible" style={{ fill: "url(#htwasqiconb-chat)" }} fill="url(#htwasqiconb-chat)"></use>
+      <g>
+        <path style={{ fill: "#FFFFFF" }} fill="#FFF" d="M783.302 243.246c-69.329-69.387-161.529-107.619-259.763-107.658-202.402 0-367.133 164.668-367.214 367.072-.026 64.699 16.883 127.854 49.017 183.522l-52.096 190.229 194.665-51.047c53.636 29.244 114.022 44.656 175.482 44.682h.151c202.382 0 367.128-164.688 367.21-367.094.039-98.087-38.121-190.319-107.452-259.706zM523.544 808.047h-.125c-54.767-.021-108.483-14.729-155.344-42.529l-11.146-6.612-115.517 30.293 30.834-112.592-7.259-11.544c-30.552-48.579-46.688-104.729-46.664-162.379.066-168.229 136.985-305.096 305.339-305.096 81.521.031 158.154 31.811 215.779 89.482s89.342 134.332 89.312 215.859c-.066 168.243-136.984 305.118-305.209 305.118zm167.415-228.515c-9.177-4.591-54.286-26.782-62.697-29.843-8.41-3.062-14.526-4.592-20.645 4.592-6.115 9.182-23.699 29.843-29.053 35.964-5.352 6.122-10.704 6.888-19.879 2.296-9.176-4.591-38.74-14.277-73.786-45.526-27.275-24.319-45.691-54.359-51.043-63.543-5.352-9.183-.569-14.146 4.024-18.72 4.127-4.109 9.175-10.713 13.763-16.069 4.587-5.355 6.117-9.183 9.175-15.304 3.059-6.122 1.529-11.479-.765-16.07-2.293-4.591-20.644-49.739-28.29-68.104-7.447-17.886-15.013-15.466-20.645-15.747-5.346-.266-11.469-.322-17.585-.322s-16.057 2.295-24.467 11.478-32.113 31.374-32.113 76.521c0 45.147 32.877 88.764 37.465 94.885 4.588 6.122 64.699 98.771 156.741 138.502 21.892 9.45 38.982 15.094 52.308 19.322 21.98 6.979 41.982 5.995 57.793 3.634 17.628-2.633 54.284-22.189 61.932-43.615 7.646-21.427 7.646-39.791 5.352-43.617-2.294-3.826-8.41-6.122-17.585-10.714z"></path>
+      </g>
+    </svg>
+  </a>
+);
+
 /* ---------------- Page ---------------- */
 const Index = () => (
   <main>
@@ -1577,16 +1875,20 @@ const Index = () => (
     <LogoMarquee />
     <About />
     <Services />
+    <CountersSection />
     <HowItWorks />
-    {/* <AdvancedHowItWorks /> */}
     {/* <Partners /> */}
     {/* <AdvancedPartners /> */}
     {/* <AdvancedPartners2 /> */}
     <AdvancedPartners3 />
     <Trust />
+    {/* <Testimonials /> */}
+    {/* <AdvancedTestimonials /> */}
+    <TestimonialsCarousel />
     <FAQ />
     <Contact />
     <Footer />
+    <FloatingWhatsApp />
   </main>
 );
 

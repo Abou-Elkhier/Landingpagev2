@@ -78,13 +78,20 @@
 
   html {
     scroll-behavior: smooth;
+    overflow-x: hidden;
   }
 
   body {
     @apply text-foreground antialiased;
     font-family: 'IBM Plex Sans Arabic', system-ui, sans-serif;
+    background: hsl(28 100% 98%);
     background: var(--gradient-warm-bg);
-    background-attachment: fixed;
+  }
+
+  @media (min-width: 768px) {
+    body {
+      background-attachment: fixed;
+    }
   }
 
   h1, h2, h3, h4 {
