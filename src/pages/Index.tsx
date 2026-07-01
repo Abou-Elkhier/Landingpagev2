@@ -351,10 +351,12 @@ const Hero = () => (
             className="mt-8 flex flex-wrap gap-2"
           >
             {[
-              { Icon: ShieldCheck, l: "منصة آمنة" },
+              { Icon: Building2, l: "شركة مغربية" },
+              { Icon: ShieldCheck, l: "منصة امنة" },
               { Icon: Zap, l: "معالجة سريعة" },
-              { Icon: Headphones, l: "دعم فني" },
-              { Icon: BadgeCheck, l: "العربية • الفرنسية • الإنجليزية" },
+              { Icon: Headphones, l: "نستمع لآراء التجار" },
+              { Icon: RefreshCw, l: "تحديثات مستمرة" },
+              { Icon: BadgeCheck, l: "العربية الفرنسية الانجليزية" },
             ].map((c, i) => (
               <span key={i} className="pill bg-white border border-border text-foreground/80 shadow-soft">
                 <c.Icon size={14} className="text-brand-magenta" />{c.l}
@@ -724,15 +726,18 @@ const Partners = () => (
 
 /* ---------------- Trust ---------------- */
 const trust = [
-  { Icon: Wallet, t: "عمولات مجزية", d: "حقق أرباحا إضافية من كل خدمة تقدمها لزبنائك.", featured: true },
-  { Icon: ShieldCheck, t: "منصة آمنة", d: "حماية متقدمة لبياناتك ومعاملاتك." },
-  { Icon: Zap, t: "معالجة سريعة", d: "تقنية متطورة لضمان سرعة تنفيذ الطلبات." },
-  { Icon: Headphones, t: "دعم العملاء", d: "فريق دعم متاح لمساعدتك في كل الأوقات." },
-  { Icon: BadgeCheck, t: "خدمات موثوقة", d: "شركاء معتمدون لضمان أفضل جودة للخدمة." },
-  { Icon: Smartphone, t: "تطبيق هاتفي سهل", d: "كل هاد الخدمات فقط من هاتفك وبدون تعقيدات" },
+  { Icon: Handshake, t: "شراكات مع علامات تجارية موثوقة", d: "نتعامل مع شركاء معتمدين لضمان أفضل جودة للخدمات.", featured: true },
+  { Icon: Smartphone, t: "منصة سهلة وسريعة الاستخدام", d: "تمكنك من إنجاز العمليات في دقائق." },
+  { Icon: Headphones, t: "دعم فني سريع واحترافي", d: "فريق متخصص جاهز لمساعدتك عند الحاجة." },
+  { Icon: Wallet, t: "شفافية كاملة في الأسعار والعمولات", d: "بدون رسوم خفية أو مفاجآت." },
+  { Icon: Layers, t: "تنوع كبير في الخدمات", d: "جميع الخدمات الأساسية التي يحتاجها التاجر في مكان واحد." },
+  { Icon: ShieldCheck, t: "أمان وحماية للمعاملات", d: "نعتمد أعلى معايير حماية البيانات والعمليات." },
+  { Icon: Clock, t: "توفير الوقت والجهد", d: "حلول ذكية تساعدك على خدمة زبنائك بسرعة أكبر." },
+  { Icon: RefreshCw, t: "تحديثات مستمرة وإضافة خدمات جديدة", d: "نطور التطبيق والمنصة باستمرار لمواكبة احتياجات السوق." },
+  { Icon: Star, t: "ثقة آلاف التجار والمهنيين", d: "مجتمع متزايد يعتمد على خدماتنا بشكل يومي." },
+  { Icon: TrendingUp, t: "التزامنا بنجاح شركائنا", d: "نجاحك هو نجاحنا، لذلك نعمل على تقديم أفضل تجربة ممكنة." },
+  { Icon: MessageCircle, t: "نستمع... ثم نطوّر", d: "نؤمن أن أفضل الأفكار تأتي من مستخدمينا، لذلك نجعل ملاحظاتهم أساسًا لتطوير خدماتنا وتطوير التطبيق." },
   { Icon: Users, t: "أكثر من +500 تاجر يثق بنا", d: "انضم إلى شبكة متنامية من التجار والمهنيين الذين يعتمدون على SIM Services يوميًا." },
-  { Icon: Wifi, t: "جميع الشبكات", d: "Orange – inwi – Maroc Telecom من تطبيق واحد" },
-  { Icon: Clock, t: "خبرة", d: "اكثر من سنة خبرة" },
 ];
 
 const Trust = () => (
@@ -1089,17 +1094,17 @@ const Footer = () => (
             <div className="font-extrabold mb-4">حمّل التطبيق</div>
             <div className="flex flex-col gap-3">
               <a href="#" className="flex items-center gap-3 rounded-2xl bg-white/15 backdrop-blur border border-white/25 px-4 py-3 hover:bg-white hover:text-brand-magenta transition">
-                <svg viewBox="0 0 24 24" className="w-7 h-7" fill="currentColor"><path d="M17.05 12.04c-.03-2.96 2.42-4.39 2.53-4.45-1.38-2.01-3.52-2.29-4.28-2.32-1.82-.18-3.55 1.07-4.47 1.07-.94 0-2.36-1.05-3.88-1.02-1.99.03-3.84 1.16-4.87 2.94-2.08 3.61-.53 8.94 1.5 11.86 1 1.43 2.18 3.03 3.73 2.97 1.5-.06 2.07-.97 3.88-.97 1.81 0 2.32.97 3.9.94 1.61-.03 2.63-1.45 3.61-2.89 1.14-1.66 1.61-3.27 1.63-3.36-.04-.02-3.13-1.2-3.18-4.77zM14.5 3.83c.82-1 1.38-2.39 1.23-3.78-1.19.05-2.63.79-3.48 1.78-.76.88-1.43 2.29-1.25 3.65 1.33.1 2.68-.67 3.5-1.65z" /></svg>
-                <div className="text-right">
-                  <div className="text-[10px] opacity-80">حمّل من</div>
-                  <div className="font-bold text-sm">App Store</div>
-                </div>
-              </a>
-              <a href="#" className="flex items-center gap-3 rounded-2xl bg-white/15 backdrop-blur border border-white/25 px-4 py-3 hover:bg-white hover:text-brand-magenta transition">
                 <svg viewBox="0 0 24 24" className="w-7 h-7" fill="currentColor"><path d="M3.6 1.7c-.4.4-.6.9-.6 1.5v17.6c0 .6.2 1.1.6 1.5l9.4-9.4-9.4-9.2zm10.6 10.4l2.9 2.9-12 6.9c-.2.1-.4.1-.6.1l9.7-9.9zm5.8-3.3c.7.4 1 1 1 1.7s-.3 1.3-1 1.7l-3 1.7-3.2-3.2 3.2-3.2 3 1.3zM14.2 11.9L4.5 2c.2 0 .4 0 .6.1l12 6.9-2.9 2.9z" /></svg>
                 <div className="text-right">
                   <div className="text-[10px] opacity-80">حمّل من</div>
                   <div className="font-bold text-sm">Google Play</div>
+                </div>
+              </a>
+              <a href="#" className="flex items-center gap-3 rounded-2xl bg-white/15 backdrop-blur border border-white/25 px-4 py-3 hover:bg-white hover:text-brand-magenta transition">
+                <svg viewBox="0 0 24 24" className="w-7 h-7" fill="currentColor"><path d="M17.05 12.04c-.03-2.96 2.42-4.39 2.53-4.45-1.38-2.01-3.52-2.29-4.28-2.32-1.82-.18-3.55 1.07-4.47 1.07-.94 0-2.36-1.05-3.88-1.02-1.99.03-3.84 1.16-4.87 2.94-2.08 3.61-.53 8.94 1.5 11.86 1 1.43 2.18 3.03 3.73 2.97 1.5-.06 2.07-.97 3.88-.97 1.81 0 2.32.97 3.9.94 1.61-.03 2.63-1.45 3.61-2.89 1.14-1.66 1.61-3.27 1.63-3.36-.04-.02-3.13-1.2-3.18-4.77zM14.5 3.83c.82-1 1.38-2.39 1.23-3.78-1.19.05-2.63.79-3.48 1.78-.76.88-1.43 2.29-1.25 3.65 1.33.1 2.68-.67 3.5-1.65z" /></svg>
+                <div className="text-right">
+                  <div className="text-[10px] opacity-80">حمّل من</div>
+                  <div className="font-bold text-sm">App Store</div>
                 </div>
               </a>
             </div>
@@ -1107,8 +1112,8 @@ const Footer = () => (
         </div>
 
         <div className="relative mt-12 pt-6 border-t border-white/20 text-center text-sm opacity-90">
-          <div className="mb-2">© {new Date().getFullYear()} SIM Services – Daoudi Groupe Technologies</div>
-          <div className="flex flex-wrap justify-center gap-4 text-xs opacity-75 font-mono" dir="ltr">
+          <div className="mb-2">© {new Date().getFullYear()} SIM Services – DAOUDI GROUPE TECHNOLOGIES</div>
+          <div className="flex flex-wrap justify-center gap-2 md:gap-4 text-xs opacity-75 font-mono" dir="ltr">
             <span>ICE: 02552225555425121545</span>
             <span>|</span>
             <span>IF: 12544</span>
